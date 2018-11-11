@@ -2,10 +2,10 @@
 #define TOKEN_H
 
     enum tokenIdEnum {
-        eofTk = 1003, 
         idTk = 1000,
         intTk = 1001,
         opDelTk = 1002,
+        eofTk = 1003, 
         keywordTK = 1004
     }; 
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -5,6 +6,9 @@
 #include "scanner.h"
 #include "token.h"
 #include "fsaTable.h"
+
+    char nextChar;
+    int lineNumber;
 
 struct token getNextToken(FILE* sourceFile) {
     nextChar = fgetc(sourceFile);
@@ -28,20 +32,20 @@ struct token getNextToken(FILE* sourceFile) {
                 for (n = 0; n < keywordListSize; n++){
                     // printf("tokenText: %s keywordList[n]: %s\n", tokenText, keywordList[n]);
                     if (strcmp(tokenText, keywordList[n]) == 0){
-                        newToken.tokenId = 1004;
+                        newToken.tokenId = keywordTK;
                         strcpy(newToken.tokenInstance, tokenText);
                         newToken.lineNum = lineNumber;
                         // printf("SCANNER:\n  Token ID: %d\n  Token Instance: %s\n  Line Number: %d\n", newToken.tokenId, newToken.tokenInstance, newToken.lineNum);
                         return newToken;
                     }
                 }
-                newToken.tokenId = nextState;
+                newToken.tokenId = static_cast<enum tokenIdEnum>(nextState);
                 strcpy(newToken.tokenInstance, tokenText);
                 newToken.lineNum = lineNumber;
                 // printf("SCANNER:\n  Token ID: %d\n  Token Instance: %s\n  Line Number: %d\n", newToken.tokenId, newToken.tokenInstance, newToken.lineNum);
                 return newToken;
             } else {
-                newToken.tokenId = nextState;
+                newToken.tokenId = static_cast<enum tokenIdEnum>(nextState);
                 strcpy(newToken.tokenInstance, tokenText);
                 newToken.lineNum = lineNumber;
                 // printf("SCANNER:\n  Token ID: %d\n  Token Instance: %s\n  Line Number: %d\n", newToken.tokenId, newToken.tokenInstance, newToken.lineNum);

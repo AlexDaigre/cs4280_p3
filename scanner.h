@@ -3,10 +3,10 @@
 
     #include <stdio.h>
 
-    int currentFSAPosition;
-    int currentFilePosition;
-    char nextChar;
-    int lineNumber;
+    extern int currentFSAPosition;
+    extern int currentFilePosition;
+    extern char nextChar;
+    extern int lineNumber;
 
     struct token getNextToken(FILE* fileName);
 
