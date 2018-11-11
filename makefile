@@ -1,8 +1,8 @@
 CC     = gcc
 CFLAGS = -g
 TARGET = scanner
-OBJS   = main.o scanner.o fsaTable.o testScanner.o token.o parser.o testTree.o
-DEPS   = scanner.h fsaTable.h testScanner.h token.h parser.h testTree.h
+OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o
+DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h
 
 $(TARGET): $(OBJS) $(DEPS)
 	$(CC) -o $(TARGET) $(OBJS)
@@ -15,9 +15,6 @@ scanner.o: scanner.c
 
 fsaTable.o: fsaTable.c
 	$(CC) $(CFLAGS) -c fsaTable.c
-
-testScanner.o: testScanner.c
-	$(CC) $(CFLAGS) -c testScanner.c
 
 token.o: token.c
 	$(CC) $(CFLAGS) -c token.c

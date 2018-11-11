@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "testScanner.h"
+#include "parser.h"
 
 void invokeScannerFromFile(char* fileName);
 
@@ -10,7 +10,7 @@ int main (int argc, char* argv[]) {
     if (argc == 2) {
         invokeScannerFromFile(argv[1]);
     } else if (argc == 1){
-        testScanner(stdin);
+        parser(stdin);
     } else {
         printf("A sourcefile is requred as an argument. No additional arguments are allowed.\n");
         return 1;
@@ -31,7 +31,7 @@ void invokeScannerFromFile(char* fileName){
     }
 
     // printf("Reading: %s\n", sourceFileName);
-    testScanner(sourceFile);
+    parser(sourceFile);
 
     fclose(sourceFile);
 }
