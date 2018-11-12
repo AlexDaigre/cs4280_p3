@@ -22,8 +22,8 @@ token.o: token.c
 testTree.o: testTree.c
 	$(CC) $(CFLAGS) -c testTree.c
 
-parser.o: parser.c
-	$(CC) $(CFLAGS) -c parser.c
+parser.o: parser.cpp
+	$(CC) $(CFLAGS) -c parser.cpp
 
 tree.o: tree.cpp
 	$(CC) $(CFLAGS) -c tree.cpp
