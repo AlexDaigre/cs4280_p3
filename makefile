@@ -1,6 +1,6 @@
 CC     = g++
 CFLAGS = -g
-TARGET = scanner
+TARGET = frontEnd
 OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o tree.o
 DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h tree.h node.h
 
