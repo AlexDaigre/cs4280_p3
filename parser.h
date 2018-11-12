@@ -3,6 +3,6 @@
 
     #include <stdio.h>
 
-    void parser(FILE* sourceFile);
+    Node* parser(FILE* sourceFile);
 
 #endif

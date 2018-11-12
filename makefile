@@ -1,8 +1,8 @@
 CC     = g++
 CFLAGS = -g
 TARGET = frontEnd
-OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o tree.o
-DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h tree.h node.h
+OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o
+DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h node.h
 
 $(TARGET): $(OBJS) $(DEPS)
 	$(CC) -o $(TARGET) $(OBJS)
@@ -24,9 +24,6 @@ testTree.o: testTree.c
 
 parser.o: parser.cpp
 	$(CC) $(CFLAGS) -c parser.cpp
-
-tree.o: tree.cpp
-	$(CC) $(CFLAGS) -c tree.cpp
 
 clean:
 	/bin/rm -f *.o $(TARGET)

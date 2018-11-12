@@ -1,35 +1,37 @@
 #include <stdio.h>
 #include <string.h>
+#include "node.h"
 #include "parser.h"
 #include "token.h"
 #include "scanner.h"
 
-void program();
-void block();
-void vars();
-void expr();
-void A();
-void M();
-void R();
-void stats();
-void mStat();
-void stat();
-void in();
-void out();
-void ifGram();
-void loop();
-void assign();
-void RO();
+Node* program();
+Node* block();
+Node* vars();
+Node* expr();
+Node* A();
+Node* M();
+Node* R();
+Node* stats();
+Node* mStat();
+Node* stat();
+Node* in();
+Node* out();
+Node* ifGram();
+Node* loop();
+Node* assign();
+Node* RO();
 void error(char* expectedToken);
 
 struct token newToken;
 FILE* sourceFile;
 
-void parser(FILE* incomingSourceFile){
+Node* parser(FILE* incomingSourceFile){
+    Node* root;
     sourceFile = incomingSourceFile;
     lineNumber = 1;
     newToken = getNextToken(sourceFile);
-    program();
+    root = program();
     if (newToken.tokenId != eofTk){
         error("End of file");
     } else {
@@ -39,7 +41,7 @@ void parser(FILE* incomingSourceFile){
 
 
 
-void program(){
+Node* program(){
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "void") == 0)){
         newToken = getNextToken(sourceFile);
         vars();
@@ -49,7 +51,7 @@ void program(){
     }
 }
 
-void block(){
+Node* block(){
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "start") == 0)){
         newToken = getNextToken(sourceFile);
         vars();
@@ -64,7 +66,7 @@ void block(){
     }
 }
 
-void vars(){
+Node* vars(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "var") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk){
@@ -87,7 +89,7 @@ void vars(){
     }
 }
 
-void expr(){
+Node* expr(){
     A();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "/") == 0)){
         newToken = getNextToken(sourceFile);
@@ -98,7 +100,7 @@ void expr(){
     }
 }
 
-void A(){
+Node* A(){
     M();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "+") == 0)){
         newToken = getNextToken(sourceFile);
@@ -109,7 +111,7 @@ void A(){
     }
 }
 
-void M(){
+Node* M(){
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "-") == 0)){
         newToken = getNextToken(sourceFile);
         M();
@@ -118,7 +120,7 @@ void M(){
     }
 }
 
-void R(){
+Node* R(){
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
         newToken = getNextToken(sourceFile);
         expr();
@@ -136,12 +138,12 @@ void R(){
     }
 }
 
-void stats(){
+Node* stats(){
     stat();
     mStat();
 }
 
-void mStat(){
+Node* mStat(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         stat();
         mStat();
@@ -163,7 +165,7 @@ void mStat(){
     }
 }
 
-void stat(){
+Node* stat(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         in();
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
@@ -181,7 +183,7 @@ void stat(){
     }
 }
 
-void in(){
+Node* in(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk) {
@@ -199,7 +201,7 @@ void in(){
     }
 }
 
-void out(){
+Node* out(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "[") == 0)){
@@ -223,7 +225,7 @@ void out(){
     }
 }
 
-void ifGram(){
+Node* ifGram(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "if") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
@@ -245,7 +247,7 @@ void ifGram(){
     }
 }
 
-void loop(){
+Node* loop(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "loop") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
@@ -267,7 +269,7 @@ void loop(){
     }
 }
 
-void assign(){
+Node* assign(){
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "let") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk) {
@@ -291,7 +293,7 @@ void assign(){
     }
 }
 
-void RO(){
+Node* RO(){
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "<") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "=") == 0)){
