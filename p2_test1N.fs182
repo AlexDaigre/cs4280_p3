@@ -3,4 +3,5 @@ start
   start
     out [ 1 ] .
   stop
+  stop
 stop

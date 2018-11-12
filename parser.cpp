@@ -32,8 +32,9 @@ void parser(FILE* incomingSourceFile){
     program();
     if (newToken.tokenId != eofTk){
         error("End of file");
+    } else {
+        printf("okay\n");
     }
-    printf("okay\n");
 }
 
 
