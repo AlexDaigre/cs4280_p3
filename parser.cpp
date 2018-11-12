@@ -48,6 +48,7 @@ Node* program(){
         block();
     } else {
         error("void");
+        return NULL;
     }
 }
 

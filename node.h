@@ -5,15 +5,14 @@
     #include "token.h"
 
     struct Node {
-        struct token thisToken;
-        Node *left;
-        Node *right;
-
-        // Node() {
-        //     this->thisToken = NULL;
-        //     this->left = NULL;
-        //     this->right = NULL;
-        // }
+        char* nodeType;
+        struct token token0;
+        struct token token1;
+        struct token token2;
+        Node* node0;
+        Node* node1;
+        Node* node2;
+        Node* node3;
     };
 
 #endif
