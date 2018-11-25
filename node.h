@@ -9,10 +9,10 @@
         struct token token0;
         struct token token1;
         struct token token2;
-        Node* node0;
-        Node* node1;
-        Node* node2;
-        Node* node3;
+        Node* child0;
+        Node* child1;
+        Node* child2;
+        Node* child3;
     };
 
 #endif
