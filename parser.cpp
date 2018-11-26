@@ -1,314 +1,424 @@
 #include <stdio.h>
 #include <string.h>
+#include "node.h"
 #include "parser.h"
 #include "token.h"
 #include "scanner.h"
 
-void program();
-void block();
-void vars();
-void expr();
-void A();
-void M();
-void R();
-void stats();
-void mStat();
-void stat();
-void in();
-void out();
-void ifGram();
-void loop();
-void assign();
-void RO();
+Node* program();
+Node* block();
+Node* vars();
+Node* expr();
+Node* A();
+Node* M();
+Node* R();
+Node* stats();
+Node* mStat();
+Node* stat();
+Node* in();
+Node* out();
+Node* ifGram();
+Node* loop();
+Node* assign();
+Node* RO();
 void error(char* expectedToken);
 
 struct token newToken;
 FILE* sourceFile;
 
-void parser(FILE* incomingSourceFile){
+Node* parser(FILE* incomingSourceFile){
+    Node* root = new Node;
     sourceFile = incomingSourceFile;
     lineNumber = 1;
     newToken = getNextToken(sourceFile);
-    program();
+    root = program();
     if (newToken.tokenId != eofTk){
-        error("End of file");
+        error((char*)"End of file");
+        return NULL;
     } else {
-        printf("okay\n");
+        printf((char*)"okay\n");
+        return root;
     }
 }
 
 
 
-void program(){
+Node* program(){
+    Node* node = new Node;
+    node->nodeType = (char*)"program";
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "void") == 0)){
         newToken = getNextToken(sourceFile);
-        vars();
-        block();
+        node->child0 = vars();
+        node->child1 = block();
+        return node;
     } else {
-        error("void");
+        error((char*)"void");
+        return NULL;
     }
 }
 
-void block(){
+Node* block(){
+    Node* node = new Node;
+    node->nodeType = (char*)"block";
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "start") == 0)){
         newToken = getNextToken(sourceFile);
-        vars();
-        stats();
+        node->child0 = vars();
+        node->child1 = stats();
         if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "stop") == 0)){
             newToken = getNextToken(sourceFile);
+            return node;
         } else {
-            error("stop");
+            error((char*)"stop");
+            return NULL;
         }
     } else {
-        error("start");
+        error((char*)"start");
+        return NULL;
     }
 }
 
-void vars(){
+Node* vars(){
+    Node* node = new Node;
+    node->nodeType = (char*)"vars";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "var") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk){
+            node->token0 = newToken;
             newToken = getNextToken(sourceFile);
             if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ":") == 0)){
                 newToken = getNextToken(sourceFile);
                 if (newToken.tokenId == intTk){
+                    node->token1 = newToken;
                     newToken = getNextToken(sourceFile);
-                    vars();
+                    node->child0 = vars();
+                    return node;
                 } else {
-                    error("Integer");
+                    error((char*)"Integer");
+                    return NULL;
                 }
             } else {
-                error(":");
+                error((char*)":");
+                return NULL;
             }
         } else {
-            error("Identifier");
+            error((char*)"Identifier");
+            return NULL;
         }
-        vars();
     }
+    return NULL;
 }
 
-void expr(){
-    A();
+Node* expr(){
+    Node* node = new Node;
+    node->nodeType = (char*)"expr";
+    node->child0 = A();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "/") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
-        expr();
+        node->child1 = expr();
     } else if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "*") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
         expr();
+        node->child1 = expr();
     }
+    return node;
 }
 
-void A(){
-    M();
+Node* A(){
+    Node* node = new Node;
+    node->nodeType = (char*)"expr";
+    node->child0 = M();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "+") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
-        A();
+        node->child1 = A();
     } else if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "-") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
-        A();
+        node->child1 = A();
     }
+    return node;
 }
 
-void M(){
+Node* M(){
+    Node* node = new Node;
+    node->nodeType = (char*)"M";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "-") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
-        M();
+        node->child0 = M();
     } else {
-        R();
+        node->child0 = R();
     }
+    return node;
 }
 
-void R(){
+Node* R(){
+    Node* node = new Node;
+    node->nodeType = (char*)"R";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
         newToken = getNextToken(sourceFile);
-        expr();
+        node->child0 = expr();
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ")") == 0)){
             newToken = getNextToken(sourceFile);
         } else {
-            error(")");
+            error((char*)")");
+            return NULL;
         }
     } else if (newToken.tokenId == idTk){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
     } else if (newToken.tokenId == intTk){
+        node->token1 = newToken;
         newToken = getNextToken(sourceFile);
     } else {
-        error("(, Identifier, or Integer");
+        error((char*)"(, Identifier, or Integer");
+        return NULL;
     }
+    return node;
 }
 
-void stats(){
-    stat();
-    mStat();
+Node* stats(){
+    Node* node = new Node;
+    node->nodeType = (char*)"stats";
+    node->child0 = stat();
+    node->child1 = mStat();
+    return node;
 }
 
-void mStat(){
+Node* mStat(){
+    Node* node = new Node;
+    node->nodeType = (char*)"mStat";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
-        stat();
-        mStat();
+        node->child0 = stat();
+        node->child1 = mStat();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
-        stat();
-        mStat();
+        node->child0 = stat();
+        node->child1 = mStat();
+        return node;
     }  else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "start") == 0)){
-        stat();
-        mStat();
+        node->child0 = stat();
+        node->child1 = mStat();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "if") == 0)){
-        stat();
-        mStat();
+        node->child0 = stat();
+        node->child1 = mStat();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "loop") == 0)){
-        stat();
-        mStat();
+        node->child0 = stat();
+        node->child1 = mStat();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "let") == 0)){
-        stat();
-        mStat();
+        node->child0 = stat();
+        node->child1 = mStat();
+        return node;
     }
+    return NULL;
 }
 
-void stat(){
+Node* stat(){
+    Node* node = new Node;
+    node->nodeType = (char*)"stat";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
-        in();
+        node->child0 = in();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
-        out();
+        node->child0 = out();
+        return node;
     }  else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "start") == 0)){
-        block();
+        node->child0 = block();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "if") == 0)){
-        ifGram();
+        node->child0 = ifGram();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "loop") == 0)){
-        loop();
+        node->child0 = loop();
+        return node;
     } else if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "let") == 0)){
-        assign();
+        node->child0 = assign();
+        return node;
     } else {
-        error("scan, out, start, if, loop, or let");
+        error((char*)"scan, out, start, if, loop, or let");
+        return NULL;
     }
 }
 
-void in(){
+Node* in(){
+    Node* node = new Node;
+    node->nodeType = (char*)"in";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk) {
+            node->token1 = newToken;
             newToken = getNextToken(sourceFile);
             if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ".") == 0)){
                 newToken = getNextToken(sourceFile);
+                return node;
             } else {
-                error(".");
+                error((char*)".");
+                return NULL;
             }
         } else {
-            error("Identifier");
+            error((char*)"Identifier");
+            return NULL;
         }
     } else {
-        error("scan");
+        error((char*)"scan");
+        return NULL;
     }
 }
 
-void out(){
+Node* out(){
+    Node* node = new Node;
+    node->nodeType = (char*)"out";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "[") == 0)){
             newToken = getNextToken(sourceFile);
-            expr();
+            node->child0 = expr();
             if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "]") == 0)){
                 newToken = getNextToken(sourceFile);
                 if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ".") == 0)){
                     newToken = getNextToken(sourceFile);
+                    return node;
                 } else {
-                    error(".");
+                    error((char*)".");
+                    return NULL;
                 }
             } else {
-                error("]");
+                error((char*)"]");
+                return NULL;
             }
         } else {
-            error("[");
+            error((char*)"[");
+            return NULL;   
         }
     } else {
-        error("out");
+        error((char*)"out");
+        return NULL;
     }
 }
 
-void ifGram(){
+Node* ifGram(){
+    Node* node = new Node;
+    node->nodeType = (char*)"ifGram";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "if") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
             newToken = getNextToken(sourceFile);
-            expr();
-            RO();
-            expr();
+            node->child0 = expr();
+            node->child1 = RO();
+            node->child2 = expr();
             if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ")") == 0)){
                 newToken = getNextToken(sourceFile);
-                stat();
+                node->child3 = stat();
+                return node;
             } else {
-                error(")");
+                error((char*)")");
+                return NULL;
             }
         } else {
-            error("(");
+            error((char*)"(");
+            return NULL;
         }
     } else {
-        error("if");
+        error((char*)"if");
+        return NULL;
     }
 }
 
-void loop(){
+Node* loop(){
+    Node* node = new Node;
+    node->nodeType = (char*)"loop";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "loop") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
             newToken = getNextToken(sourceFile);
-            expr();
-            RO();
-            expr();
+            node->child0 = expr();
+            node->child1 = RO();
+            node->child2 = expr();
             if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ")") == 0)){
                 newToken = getNextToken(sourceFile);
-                stat();
+                node->child3 = stat();
+                return node;
             } else {
-                error(")");
+                error((char*)")");
+                return NULL;
             }
         } else {
-            error("(");
+            error((char*)"(");
+            return NULL;
         }
     } else {
-        error("loop");
+        error((char*)"loop");
+        return NULL;
     }
 }
 
-void assign(){
+Node* assign(){
+    Node* node = new Node;
+    node->nodeType = (char*)"assign";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "let") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk) {
+            node->token0 = newToken;
             newToken = getNextToken(sourceFile);
             if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "=") == 0)){
                 newToken = getNextToken(sourceFile);
-                expr();
+                node->child0 = expr();
                 if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ".") == 0)){
                     newToken = getNextToken(sourceFile);  
+                    return node;
                 } else {
-                    error(".");
+                    error((char*)".");
+                    return NULL;
                 }
             } else {
-                error("=");
+                error((char*)"=");
+                return NULL;
             }
         } else {
-            error("Identifier");
+            error((char*)"Identifier");
+            return NULL;
         }
     } else {
-        error("let");
+        error((char*)"let");
+        return NULL;
     }
 }
 
-void RO(){
+Node* RO(){
+    Node* node = new Node;
+    node->nodeType = (char*)"assign";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "<") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "=") == 0)){
+            node->token1 = newToken;
             newToken = getNextToken(sourceFile);
         }
+        return node;
     } else if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ">") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "=") == 0)){
+            node->token1 = newToken;
             newToken = getNextToken(sourceFile);
         }
+        return node;
     }  else if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "=") == 0)){
+        node->token0 = newToken;
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "=") == 0)){
+            node->token1 = newToken;
             newToken = getNextToken(sourceFile);
         }
+        return node;
     } else {
-        error("<, <=, >, >=, ==, or =");
+        error((char*)"<, <=, >, >=, ==, or =");
+        return NULL;
     }
 }
 

@@ -2,7 +2,8 @@
 #define PARSER_H
 
     #include <stdio.h>
+    #include "node.h"
 
-    void parser(FILE* sourceFile);
+    Node* parser(FILE* sourceFile);
 
 #endif

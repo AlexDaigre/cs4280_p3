@@ -1,27 +1,16 @@
 #ifndef NODE_H
 #define NODE_H
-    #include <string>
-    #include <set>
-    #include <iostream> 
+    #include "token.h"
 
     struct Node {
-        std::set<std::string> valuesSet;
-        std::string value;
-        Node *left;
-        Node *right;
-
-        Node() {
-            this->value = "";
-            this->left = NULL;
-            this->right = NULL;
-        }
-
-        Node(std::string value) {
-            this->value = value[0];
-            this->valuesSet.insert(value);
-            this->left = NULL;
-            this->right = NULL;
-        }
+        const char* nodeType;
+        struct token token0;
+        struct token token1;
+        struct token token2;
+        Node* child0;
+        Node* child1;
+        Node* child2;
+        Node* child3;
     };
 
 #endif
