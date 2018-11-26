@@ -27,7 +27,7 @@ struct token newToken;
 FILE* sourceFile;
 
 Node* parser(FILE* incomingSourceFile){
-    Node* root;
+    Node* root = new Node;
     sourceFile = incomingSourceFile;
     lineNumber = 1;
     newToken = getNextToken(sourceFile);
@@ -44,7 +44,7 @@ Node* parser(FILE* incomingSourceFile){
 
 
 Node* program(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"program";
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "void") == 0)){
         newToken = getNextToken(sourceFile);
@@ -58,7 +58,7 @@ Node* program(){
 }
 
 Node* block(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"block";
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "start") == 0)){
         newToken = getNextToken(sourceFile);
@@ -78,7 +78,7 @@ Node* block(){
 }
 
 Node* vars(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"vars";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "var") == 0)){
         newToken = getNextToken(sourceFile);
@@ -109,7 +109,7 @@ Node* vars(){
 }
 
 Node* expr(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"expr";
     node->child0 = A();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "/") == 0)){
@@ -126,7 +126,7 @@ Node* expr(){
 }
 
 Node* A(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"expr";
     node->child0 = M();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "+") == 0)){
@@ -142,7 +142,7 @@ Node* A(){
 }
 
 Node* M(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"M";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "-") == 0)){
         node->token0 = newToken;
@@ -155,7 +155,7 @@ Node* M(){
 }
 
 Node* R(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"R";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
         newToken = getNextToken(sourceFile);
@@ -180,7 +180,7 @@ Node* R(){
 }
 
 Node* stats(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"stats";
     node->child0 = stat();
     node->child1 = mStat();
@@ -188,7 +188,7 @@ Node* stats(){
 }
 
 Node* mStat(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"mStat";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         node->child0 = stat();
@@ -219,7 +219,7 @@ Node* mStat(){
 }
 
 Node* stat(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"stat";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         node->child0 = in();
@@ -246,7 +246,7 @@ Node* stat(){
 }
 
 Node* in(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"in";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         newToken = getNextToken(sourceFile);
@@ -271,7 +271,7 @@ Node* in(){
 }
 
 Node* out(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"out";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
         newToken = getNextToken(sourceFile);
@@ -302,7 +302,7 @@ Node* out(){
 }
 
 Node* ifGram(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"ifGram";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "if") == 0)){
         newToken = getNextToken(sourceFile);
@@ -330,7 +330,7 @@ Node* ifGram(){
 }
 
 Node* loop(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"loop";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "loop") == 0)){
         newToken = getNextToken(sourceFile);
@@ -358,7 +358,7 @@ Node* loop(){
 }
 
 Node* assign(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"assign";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "let") == 0)){
         newToken = getNextToken(sourceFile);
@@ -390,7 +390,7 @@ Node* assign(){
 }
 
 Node* RO(){
-    Node* node;
+    Node* node = new Node;
     node->nodeType = (char*)"assign";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "<") == 0)){
         node->token0 = newToken;
