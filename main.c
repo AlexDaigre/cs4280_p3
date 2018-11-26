@@ -3,21 +3,24 @@
 #include <string.h>
 #include <errno.h>
 #include "parser.h"
+#include "testTree.h"
+#include "node.h"
 
-void invokeScannerFromFile(char* fileName);
+void invokeParserFromFile(char* fileName);
 
 int main (int argc, char* argv[]) {
     if (argc == 2) {
-        invokeScannerFromFile(argv[1]);
+        invokeParserFromFile(argv[1]);
     } else if (argc == 1){
-        parser(stdin);
+        Node* node = parser(stdin);
+        traversePreorder(node);
     } else {
         printf("A sourcefile is requred as an argument. No additional arguments are allowed.\n");
         return 1;
     }
 }
 
-void invokeScannerFromFile(char* fileName){
+void invokeParserFromFile(char* fileName){
     // char* sourceFileName = "P1_test4.fs182";
     char sourceFileName[256] = "";;
     char* fileExtention = ".fs182";
@@ -31,7 +34,8 @@ void invokeScannerFromFile(char* fileName){
     }
 
     // printf("Reading: %s\n", sourceFileName);
-    parser(sourceFile);
+    Node* node = parser(sourceFile);
+    traversePreorder(node);
 
     fclose(sourceFile);
 }
