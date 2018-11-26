@@ -7,20 +7,20 @@ DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h node.h
 $(TARGET): $(OBJS) $(DEPS)
 	$(CC) -o $(TARGET) $(OBJS)
 
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c
+main.o: main.cpp
+	$(CC) $(CFLAGS) -c main.cpp
 
 scanner.o: scanner.cpp
 	$(CC) $(CFLAGS) -c scanner.cpp
 
-fsaTable.o: fsaTable.c
-	$(CC) $(CFLAGS) -c fsaTable.c
+fsaTable.o: fsaTable.cpp
+	$(CC) $(CFLAGS) -c fsaTable.cpp
 
-token.o: token.c
-	$(CC) $(CFLAGS) -c token.c
+token.o: token.cpp
+	$(CC) $(CFLAGS) -c token.cpp
 
-testTree.o: testTree.c
-	$(CC) $(CFLAGS) -c testTree.c
+testTree.o: testTree.cpp
+	$(CC) $(CFLAGS) -c testTree.cpp
 
 parser.o: parser.cpp
 	$(CC) $(CFLAGS) -c parser.cpp

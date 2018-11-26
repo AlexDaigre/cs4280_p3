@@ -13,20 +13,22 @@ int fsaTable[rowSize][colSize] = {
     {1003, 1000, 1001, 1003, 1002},
     {  -1,   -1,   -1,    3, 1002}
 };
+
 char* keywordList[keywordListSize] = {
-    "start",
-    "stop",
-    "loop",
-    "void",
-    "var",
-    "return",
-    "scan",
-    "out",
-    "program",
-    "if",
-    "then",
-    "let"
+    (char*)"start",
+    (char*)"stop",
+    (char*)"loop",
+    (char*)"void",
+    (char*)"var",
+    (char*)"return",
+    (char*)"scan",
+    (char*)"out",
+    (char*)"program",
+    (char*)"if",
+    (char*)"then",
+    (char*)"let"
 };
+
 char opDelList[opDelListSize] = {
     '=',
     '<',

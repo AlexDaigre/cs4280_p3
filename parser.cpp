@@ -33,9 +33,10 @@ Node* parser(FILE* incomingSourceFile){
     newToken = getNextToken(sourceFile);
     root = program();
     if (newToken.tokenId != eofTk){
-        error("End of file");
+        error((char*)"End of file");
+        return NULL;
     } else {
-        printf("okay\n");
+        printf((char*)"okay\n");
         return root;
     }
 }
@@ -44,21 +45,21 @@ Node* parser(FILE* incomingSourceFile){
 
 Node* program(){
     Node* node;
-    node->nodeType = "program";
+    node->nodeType = (char*)"program";
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "void") == 0)){
         newToken = getNextToken(sourceFile);
         node->child0 = vars();
         node->child1 = block();
         return node;
     } else {
-        error("void");
+        error((char*)"void");
         return NULL;
     }
 }
 
 Node* block(){
     Node* node;
-    node->nodeType = "block";
+    node->nodeType = (char*)"block";
     if( newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "start") == 0)){
         newToken = getNextToken(sourceFile);
         node->child0 = vars();
@@ -67,18 +68,18 @@ Node* block(){
             newToken = getNextToken(sourceFile);
             return node;
         } else {
-            error("stop");
+            error((char*)"stop");
             return NULL;
         }
     } else {
-        error("start");
+        error((char*)"start");
         return NULL;
     }
 }
 
 Node* vars(){
     Node* node;
-    node->nodeType = "vars";
+    node->nodeType = (char*)"vars";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "var") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk){
@@ -92,15 +93,15 @@ Node* vars(){
                     node->child0 = vars();
                     return node;
                 } else {
-                    error("Integer");
+                    error((char*)"Integer");
                     return NULL;
                 }
             } else {
-                error(":");
+                error((char*)":");
                 return NULL;
             }
         } else {
-            error("Identifier");
+            error((char*)"Identifier");
             return NULL;
         }
     }
@@ -109,7 +110,7 @@ Node* vars(){
 
 Node* expr(){
     Node* node;
-    node->nodeType = "expr";
+    node->nodeType = (char*)"expr";
     node->child0 = A();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "/") == 0)){
         node->token0 = newToken;
@@ -126,7 +127,7 @@ Node* expr(){
 
 Node* A(){
     Node* node;
-    node->nodeType = "expr";
+    node->nodeType = (char*)"expr";
     node->child0 = M();
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "+") == 0)){
         node->token0 = newToken;
@@ -142,7 +143,7 @@ Node* A(){
 
 Node* M(){
     Node* node;
-    node->nodeType = "M";
+    node->nodeType = (char*)"M";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "-") == 0)){
         node->token0 = newToken;
         newToken = getNextToken(sourceFile);
@@ -155,14 +156,14 @@ Node* M(){
 
 Node* R(){
     Node* node;
-    node->nodeType = "R";
+    node->nodeType = (char*)"R";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
         newToken = getNextToken(sourceFile);
         node->child0 = expr();
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, ")") == 0)){
             newToken = getNextToken(sourceFile);
         } else {
-            error(")");
+            error((char*)")");
             return NULL;
         }
     } else if (newToken.tokenId == idTk){
@@ -172,7 +173,7 @@ Node* R(){
         node->token1 = newToken;
         newToken = getNextToken(sourceFile);
     } else {
-        error("(, Identifier, or Integer");
+        error((char*)"(, Identifier, or Integer");
         return NULL;
     }
     return node;
@@ -180,7 +181,7 @@ Node* R(){
 
 Node* stats(){
     Node* node;
-    node->nodeType = "stats";
+    node->nodeType = (char*)"stats";
     node->child0 = stat();
     node->child1 = mStat();
     return node;
@@ -188,7 +189,7 @@ Node* stats(){
 
 Node* mStat(){
     Node* node;
-    node->nodeType = "mStat";
+    node->nodeType = (char*)"mStat";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         node->child0 = stat();
         node->child1 = mStat();
@@ -219,7 +220,7 @@ Node* mStat(){
 
 Node* stat(){
     Node* node;
-    node->nodeType = "stat";
+    node->nodeType = (char*)"stat";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         node->child0 = in();
         return node;
@@ -239,14 +240,14 @@ Node* stat(){
         node->child0 = assign();
         return node;
     } else {
-        error("scan, out, start, if, loop, or let");
+        error((char*)"scan, out, start, if, loop, or let");
         return NULL;
     }
 }
 
 Node* in(){
     Node* node;
-    node->nodeType = "in";
+    node->nodeType = (char*)"in";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "scan") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk) {
@@ -256,22 +257,22 @@ Node* in(){
                 newToken = getNextToken(sourceFile);
                 return node;
             } else {
-                error(".");
+                error((char*)".");
                 return NULL;
             }
         } else {
-            error("Identifier");
+            error((char*)"Identifier");
             return NULL;
         }
     } else {
-        error("scan");
+        error((char*)"scan");
         return NULL;
     }
 }
 
 Node* out(){
     Node* node;
-    node->nodeType = "out";
+    node->nodeType = (char*)"out";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "out") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "[") == 0)){
@@ -283,26 +284,26 @@ Node* out(){
                     newToken = getNextToken(sourceFile);
                     return node;
                 } else {
-                    error(".");
+                    error((char*)".");
                     return NULL;
                 }
             } else {
-                error("]");
+                error((char*)"]");
                 return NULL;
             }
         } else {
-            error("[");
+            error((char*)"[");
             return NULL;   
         }
     } else {
-        error("out");
+        error((char*)"out");
         return NULL;
     }
 }
 
 Node* ifGram(){
     Node* node;
-    node->nodeType = "ifGram";
+    node->nodeType = (char*)"ifGram";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "if") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
@@ -315,22 +316,22 @@ Node* ifGram(){
                 node->child3 = stat();
                 return node;
             } else {
-                error(")");
+                error((char*)")");
                 return NULL;
             }
         } else {
-            error("(");
+            error((char*)"(");
             return NULL;
         }
     } else {
-        error("if");
+        error((char*)"if");
         return NULL;
     }
 }
 
 Node* loop(){
     Node* node;
-    node->nodeType = "loop";
+    node->nodeType = (char*)"loop";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "loop") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "(") == 0)){
@@ -343,22 +344,22 @@ Node* loop(){
                 node->child3 = stat();
                 return node;
             } else {
-                error(")");
+                error((char*)")");
                 return NULL;
             }
         } else {
-            error("(");
+            error((char*)"(");
             return NULL;
         }
     } else {
-        error("loop");
+        error((char*)"loop");
         return NULL;
     }
 }
 
 Node* assign(){
     Node* node;
-    node->nodeType = "assign";
+    node->nodeType = (char*)"assign";
     if (newToken.tokenId == keywordTK && (strcmp(newToken.tokenInstance, "let") == 0)){
         newToken = getNextToken(sourceFile);
         if (newToken.tokenId == idTk) {
@@ -371,26 +372,26 @@ Node* assign(){
                     newToken = getNextToken(sourceFile);  
                     return node;
                 } else {
-                    error(".");
+                    error((char*)".");
                     return NULL;
                 }
             } else {
-                error("=");
+                error((char*)"=");
                 return NULL;
             }
         } else {
-            error("Identifier");
+            error((char*)"Identifier");
             return NULL;
         }
     } else {
-        error("let");
+        error((char*)"let");
         return NULL;
     }
 }
 
 Node* RO(){
     Node* node;
-    node->nodeType = "assign";
+    node->nodeType = (char*)"assign";
     if (newToken.tokenId == opDelTk && (strcmp(newToken.tokenInstance, "<") == 0)){
         node->token0 = newToken;
         newToken = getNextToken(sourceFile);
@@ -416,7 +417,7 @@ Node* RO(){
         }
         return node;
     } else {
-        error("<, <=, >, >=, ==, or =");
+        error((char*)"<, <=, >, >=, ==, or =");
         return NULL;
     }
 }

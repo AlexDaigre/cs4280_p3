@@ -23,7 +23,7 @@ int main (int argc, char* argv[]) {
 void invokeParserFromFile(char* fileName){
     // char* sourceFileName = "P1_test4.fs182";
     char sourceFileName[256] = "";;
-    char* fileExtention = ".fs182";
+    char* fileExtention = (char*)".fs182";
     
     strcpy(sourceFileName, fileName);
     strcat(sourceFileName, fileExtention);
