@@ -1,7 +1,7 @@
 CC     = g++
 CFLAGS = -g
 TARGET = frontEnd
-OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o
+OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o st.o
 DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h node.h
 
 $(TARGET): $(OBJS) $(DEPS)
@@ -24,6 +24,9 @@ testTree.o: testTree.cpp
 
 parser.o: parser.cpp
 	$(CC) $(CFLAGS) -c parser.cpp
+
+st.o: st.cpp
+	$(CC) $(CFLAGS) -c st.cpp
 
 clean:
 	/bin/rm -f *.o $(TARGET)
