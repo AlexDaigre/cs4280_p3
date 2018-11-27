@@ -2,7 +2,7 @@ CC     = g++
 CFLAGS = -g
 TARGET = frontEnd
 OBJS   = main.o scanner.o fsaTable.o token.o parser.o testTree.o st.o
-DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h node.h
+DEPS   = scanner.h fsaTable.h token.h parser.h testTree.h node.h st.h
 
 $(TARGET): $(OBJS) $(DEPS)
 	$(CC) -o $(TARGET) $(OBJS)
