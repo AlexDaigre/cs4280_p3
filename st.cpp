@@ -1,5 +1,6 @@
 #include <set>
 #include <string>
+#include <string.h>
 #include <stdio.h>
 #include "st.h"
 #include "node.h"
