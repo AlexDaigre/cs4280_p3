@@ -38,6 +38,7 @@ void invokeParserFromFile(char* fileName){
     // printf("Reading: %s\n", sourceFileName);
     Node* node = parser(sourceFile);
     traversePreorder(node);
+    checkVarsInTree(node);
 
     fclose(sourceFile);
 }
