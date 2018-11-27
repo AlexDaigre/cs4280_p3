@@ -8,6 +8,7 @@ char* getTokenName(enum tokenIdEnum newToken){
         case intTk: return (char*)"intTk";
         case opDelTk: return (char*)"opDelTk";
         case keywordTK: return (char*)"keywordTK";
+        default: return (char*)"NULL";
    }
 }
 
@@ -18,5 +19,6 @@ char* getTokenDescription(enum tokenIdEnum newToken){
         case intTk: return (char*)"Integer Token";
         case opDelTk: return (char*)"Operator and Delimiter Token";
         case keywordTK: return (char*)"Keyword Token";
+        default: return (char*)"NULL";
    }
 }
